@@ -28,12 +28,12 @@
 
         <Border Grid.ColumnSpan="2"
                 Margin="0 0 0 16"
+                Padding="20"
                 CornerRadius="12"
                 BorderBrush="#33FFFFFF"
                 BorderThickness="1"
                 Background="#19000000">
             <StackPanel Orientation="Horizontal"
-                        Padding="20"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
