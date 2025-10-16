@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2c616fa5-f03b-41ae-8250-b2bd01afaa36}") = "Quatro.App", "src/Quatro.App/Quatro.App.csproj", "{1b4f88e9-c947-43ec-b388-038f19bb207a}"
+EndProject
+Global
+    GlobalSection(SolutionConfigurationPlatforms) = preSolution
+        Debug|Any CPU = Debug|Any CPU
+        Release|Any CPU = Release|Any CPU
+    EndGlobalSection
+    GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        {1b4f88e9-c947-43ec-b388-038f19bb207a}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {1b4f88e9-c947-43ec-b388-038f19bb207a}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {1b4f88e9-c947-43ec-b388-038f19bb207a}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {1b4f88e9-c947-43ec-b388-038f19bb207a}.Release|Any CPU.Build.0 = Release|Any CPU
+    EndGlobalSection
+    GlobalSection(SolutionProperties) = preSolution
+        HideSolutionNode = FALSE
+    EndGlobalSection
+EndGlobal
