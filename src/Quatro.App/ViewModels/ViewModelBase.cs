@@ -1,26 +1,27 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Quatro.ViewModels;
-
-public abstract class ViewModelBase : INotifyPropertyChanged
+namespace Quatro.ViewModels
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
+    public abstract class ViewModelBase : INotifyPropertyChanged
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (Equals(storage, value))
+        protected void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
         {
-            return false;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        storage = value;
-        RaisePropertyChanged(propertyName);
-        return true;
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string? propertyName = null)
+        {
+            if (Equals(storage, value))
+            {
+                return false;
+            }
+
+            storage = value;
+            RaisePropertyChanged(propertyName);
+            return true;
+        }
     }
 }

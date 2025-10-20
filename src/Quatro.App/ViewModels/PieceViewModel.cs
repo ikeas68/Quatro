@@ -1,61 +1,62 @@
 using System.Windows.Media;
 using Quatro.Models;
 
-namespace Quatro.ViewModels;
-
-public sealed class PieceViewModel : ViewModelBase
+namespace Quatro.ViewModels
 {
-    private bool _isAvailable = true;
-    private bool _isSelected;
-    private bool _isDimmed;
-    private bool _isOnBoard;
-    private bool _isWinning;
-
-    public PieceViewModel(Piece piece)
+    public sealed class PieceViewModel : ViewModelBase
     {
-        Piece = piece;
-        QuadrantBrushes = piece.QuadrantBrushes;
-    }
+        private bool _isAvailable = true;
+        private bool _isSelected;
+        private bool _isDimmed;
+        private bool _isOnBoard;
+        private bool _isWinning;
 
-    public Piece Piece { get; }
+        public PieceViewModel(Piece piece)
+        {
+            Piece = piece;
+            QuadrantBrushes = piece.QuadrantBrushes;
+        }
 
-    private SolidColorBrush[] QuadrantBrushes { get; }
+        public Piece Piece { get; }
 
-    public Brush TopLeftBrush => QuadrantBrushes[0];
+        private SolidColorBrush[] QuadrantBrushes { get; }
 
-    public Brush TopRightBrush => QuadrantBrushes[1];
+        public Brush TopLeftBrush => QuadrantBrushes[0];
 
-    public Brush BottomLeftBrush => QuadrantBrushes[2];
+        public Brush TopRightBrush => QuadrantBrushes[1];
 
-    public Brush BottomRightBrush => QuadrantBrushes[3];
+        public Brush BottomLeftBrush => QuadrantBrushes[2];
 
-    public bool IsAvailable
-    {
-        get => _isAvailable;
-        set => SetProperty(ref _isAvailable, value);
-    }
+        public Brush BottomRightBrush => QuadrantBrushes[3];
 
-    public bool IsSelected
-    {
-        get => _isSelected;
-        set => SetProperty(ref _isSelected, value);
-    }
+        public bool IsAvailable
+        {
+            get => _isAvailable;
+            set => SetProperty(ref _isAvailable, value);
+        }
 
-    public bool IsDimmed
-    {
-        get => _isDimmed;
-        set => SetProperty(ref _isDimmed, value);
-    }
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set => SetProperty(ref _isSelected, value);
+        }
 
-    public bool IsOnBoard
-    {
-        get => _isOnBoard;
-        set => SetProperty(ref _isOnBoard, value);
-    }
+        public bool IsDimmed
+        {
+            get => _isDimmed;
+            set => SetProperty(ref _isDimmed, value);
+        }
 
-    public bool IsWinning
-    {
-        get => _isWinning;
-        set => SetProperty(ref _isWinning, value);
+        public bool IsOnBoard
+        {
+            get => _isOnBoard;
+            set => SetProperty(ref _isOnBoard, value);
+        }
+
+        public bool IsWinning
+        {
+            get => _isWinning;
+            set => SetProperty(ref _isWinning, value);
+        }
     }
 }

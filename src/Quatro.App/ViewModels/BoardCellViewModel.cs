@@ -1,29 +1,30 @@
-namespace Quatro.ViewModels;
-
-public sealed class BoardCellViewModel : ViewModelBase
+namespace Quatro.ViewModels
 {
-    private PieceViewModel? _piece;
-    private bool _isWinning;
-
-    public BoardCellViewModel(int row, int column)
+    public sealed class BoardCellViewModel : ViewModelBase
     {
-        Row = row;
-        Column = column;
-    }
+        private PieceViewModel? _piece;
+        private bool _isWinning;
 
-    public int Row { get; }
+        public BoardCellViewModel(int row, int column)
+        {
+            Row = row;
+            Column = column;
+        }
 
-    public int Column { get; }
+        public int Row { get; }
 
-    public PieceViewModel? Piece
-    {
-        get => _piece;
-        set => SetProperty(ref _piece, value);
-    }
+        public int Column { get; }
 
-    public bool IsWinning
-    {
-        get => _isWinning;
-        set => SetProperty(ref _isWinning, value);
+        public PieceViewModel? Piece
+        {
+            get => _piece;
+            set => SetProperty(ref _piece, value);
+        }
+
+        public bool IsWinning
+        {
+            get => _isWinning;
+            set => SetProperty(ref _isWinning, value);
+        }
     }
 }
