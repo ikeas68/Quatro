@@ -41,23 +41,39 @@ namespace Quatro.Models
             return brush;
         }
 
-        public bool HasAttribute(PieceAttribute attribute) => attribute switch
+        public bool HasAttribute(PieceAttribute attribute)
         {
-            PieceAttribute.Light => IsLight,
-            PieceAttribute.Warm => IsWarm,
-            PieceAttribute.Vivid => IsVivid,
-            PieceAttribute.Earthy => IsEarthy,
-            _ => throw new ArgumentOutOfRangeException(nameof(attribute), attribute, null)
-        };
+            switch (attribute)
+            {
+                case PieceAttribute.Light:
+                    return IsLight;
+                case PieceAttribute.Warm:
+                    return IsWarm;
+                case PieceAttribute.Vivid:
+                    return IsVivid;
+                case PieceAttribute.Earthy:
+                    return IsEarthy;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(attribute), attribute, null);
+            }
+        }
 
-        public Color GetAttributeColor(PieceAttribute attribute) => attribute switch
+        public Color GetAttributeColor(PieceAttribute attribute)
         {
-            PieceAttribute.Light => IsLight ? PiecePalette.White : PiecePalette.Black,
-            PieceAttribute.Warm => IsWarm ? PiecePalette.Red : PiecePalette.Blue,
-            PieceAttribute.Vivid => IsVivid ? PiecePalette.Magenta : PiecePalette.Green,
-            PieceAttribute.Earthy => IsEarthy ? PiecePalette.Brown : PiecePalette.Violet,
-            _ => throw new ArgumentOutOfRangeException(nameof(attribute), attribute, null)
-        };
+            switch (attribute)
+            {
+                case PieceAttribute.Light:
+                    return IsLight ? PiecePalette.White : PiecePalette.Black;
+                case PieceAttribute.Warm:
+                    return IsWarm ? PiecePalette.Red : PiecePalette.Blue;
+                case PieceAttribute.Vivid:
+                    return IsVivid ? PiecePalette.Magenta : PiecePalette.Green;
+                case PieceAttribute.Earthy:
+                    return IsEarthy ? PiecePalette.Brown : PiecePalette.Violet;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(attribute), attribute, null);
+            }
+        }
     }
 
     public enum PieceAttribute

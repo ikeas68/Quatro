@@ -7,9 +7,9 @@ namespace Quatro.Models
 
     public sealed class BoardState
     {
-        private readonly Piece?[,] _grid = new Piece?[4, 4];
+        private readonly Piece[,] _grid = new Piece[4, 4];
 
-        public Piece? this[int row, int column]
+        public Piece this[int row, int column]
         {
             get => _grid[row, column];
             private set => _grid[row, column] = value;
@@ -17,7 +17,7 @@ namespace Quatro.Models
 
         public bool TryPlacePiece(int row, int column, Piece piece)
         {
-            if (_grid[row, column] is not null)
+            if (_grid[row, column] != null)
             {
                 return false;
             }
@@ -28,46 +28,52 @@ namespace Quatro.Models
 
         public void RemovePiece(int row, int column) => _grid[row, column] = null;
 
-        public IEnumerable<(int row, int column)> GetEmptyCells()
+        public IEnumerable<BoardPosition> GetEmptyCells()
         {
             for (var r = 0; r < 4; r++)
             {
                 for (var c = 0; c < 4; c++)
                 {
-                    if (_grid[r, c] is null)
+                    if (_grid[r, c] == null)
                     {
-                        yield return (r, c);
+                        yield return new BoardPosition(r, c);
                     }
                 }
             }
         }
 
-        public IReadOnlyList<Piece?> GetRow(int row) => Enumerable.Range(0, 4).Select(c => _grid[row, c]).ToArray();
+        public IReadOnlyList<Piece> GetRow(int row) => Enumerable.Range(0, 4).Select(c => _grid[row, c]).ToArray();
 
-        public IReadOnlyList<Piece?> GetColumn(int column) => Enumerable.Range(0, 4).Select(r => _grid[r, column]).ToArray();
+        public IReadOnlyList<Piece> GetColumn(int column) => Enumerable.Range(0, 4).Select(r => _grid[r, column]).ToArray();
 
-        public IReadOnlyList<Piece?> GetDescendingDiagonal() => Enumerable.Range(0, 4).Select(i => _grid[i, i]).ToArray();
+        public IReadOnlyList<Piece> GetDescendingDiagonal() => Enumerable.Range(0, 4).Select(i => _grid[i, i]).ToArray();
 
-        public IReadOnlyList<Piece?> GetAscendingDiagonal() => Enumerable.Range(0, 4).Select(i => _grid[3 - i, i]).ToArray();
+        public IReadOnlyList<Piece> GetAscendingDiagonal() => Enumerable.Range(0, 4).Select(i => _grid[3 - i, i]).ToArray();
 
-        public bool CheckWin(out List<(int row, int column)> winningCells, out PieceAttribute? winningAttribute)
+        public bool CheckWin(out List<BoardPosition> winningCells, out PieceAttribute? winningAttribute)
         {
-            winningCells = new List<(int, int)>();
+            winningCells = new List<BoardPosition>();
             winningAttribute = null;
 
-            bool EvaluateLine(IEnumerable<(int r, int c)> cells)
+            bool EvaluateLine(IEnumerable<BoardPosition> cells)
             {
                 var list = cells.ToList();
-                var pieces = list.Select(cell => _grid[cell.r, cell.c]).ToList();
-                if (pieces.Any(p => p is null))
+                var pieces = list.Select(cell => _grid[cell.Row, cell.Column]).ToList();
+                if (pieces.Any(p => p == null))
                 {
                     return false;
                 }
 
                 foreach (PieceAttribute attribute in Enum.GetValues(typeof(PieceAttribute)))
                 {
-                    var first = pieces[0]!.HasAttribute(attribute);
-                    if (pieces.All(p => p!.HasAttribute(attribute) == first))
+                    var firstPiece = pieces[0];
+                    if (firstPiece == null)
+                    {
+                        continue;
+                    }
+
+                    var first = firstPiece.HasAttribute(attribute);
+                    if (pieces.All(p => p != null && p.HasAttribute(attribute) == first))
                     {
                         winningCells = list;
                         winningAttribute = attribute;
@@ -80,7 +86,7 @@ namespace Quatro.Models
 
             for (var r = 0; r < 4; r++)
             {
-                if (EvaluateLine(Enumerable.Range(0, 4).Select(c => (r, c))))
+                if (EvaluateLine(Enumerable.Range(0, 4).Select(c => new BoardPosition(r, c))))
                 {
                     return true;
                 }
@@ -88,18 +94,18 @@ namespace Quatro.Models
 
             for (var c = 0; c < 4; c++)
             {
-                if (EvaluateLine(Enumerable.Range(0, 4).Select(r => (r, c))))
+                if (EvaluateLine(Enumerable.Range(0, 4).Select(r => new BoardPosition(r, c))))
                 {
                     return true;
                 }
             }
 
-            if (EvaluateLine(Enumerable.Range(0, 4).Select(i => (i, i))))
+            if (EvaluateLine(Enumerable.Range(0, 4).Select(i => new BoardPosition(i, i))))
             {
                 return true;
             }
 
-            if (EvaluateLine(Enumerable.Range(0, 4).Select(i => (3 - i, i))))
+            if (EvaluateLine(Enumerable.Range(0, 4).Select(i => new BoardPosition(3 - i, i))))
             {
                 return true;
             }

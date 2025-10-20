@@ -12,7 +12,7 @@ namespace Quatro.ViewModels
 {
     public sealed class GameViewModel : ViewModelBase
     {
-        private readonly ComputerPlayer _computerPlayer = new();
+        private readonly ComputerPlayer _computerPlayer = new ComputerPlayer();
         private readonly ObservableCollection<PieceViewModel> _pieces;
         private readonly ObservableCollection<BoardCellViewModel> _boardCells;
         private readonly ReadOnlyObservableCollection<PieceViewModel> _readOnlyPieces;
@@ -22,14 +22,14 @@ namespace Quatro.ViewModels
         private readonly RelayCommand _selectPieceCommand;
         private readonly RelayCommand _newGameCommand;
 
-        private BoardState _board = new();
-        private PieceViewModel? _currentPiece;
+        private BoardState _board = new BoardState();
+        private PieceViewModel _currentPiece;
         private GamePhase _phase;
         private string _statusMessage = string.Empty;
         private string _instructionMessage = string.Empty;
         private string _winnerMessage = string.Empty;
         private bool _isGameOver;
-        private Brush? _winningBrush;
+        private Brush _winningBrush;
         private int _selectedDifficulty = 1;
 
         public GameViewModel()
@@ -118,273 +118,279 @@ namespace Quatro.ViewModels
         }
 
         public string WinnerMessage
-    {
-        get => _winnerMessage;
-        private set => SetProperty(ref _winnerMessage, value);
-    }
-
-    public bool IsBoardInteractionEnabled => _phase == GamePhase.HumanPlacing;
-
-    public bool IsPieceSelectionEnabled => _phase == GamePhase.HumanSelecting;
-
-    public bool IsGameOver
-    {
-        get => _isGameOver;
-        private set
         {
-            if (SetProperty(ref _isGameOver, value))
+            get => _winnerMessage;
+            private set => SetProperty(ref _winnerMessage, value);
+        }
+
+        public bool IsBoardInteractionEnabled => _phase == GamePhase.HumanPlacing;
+
+        public bool IsPieceSelectionEnabled => _phase == GamePhase.HumanSelecting;
+
+        public bool IsGameOver
+        {
+            get => _isGameOver;
+            private set
             {
-                _placePieceCommand.RaiseCanExecuteChanged();
-                _selectPieceCommand.RaiseCanExecuteChanged();
+                if (SetProperty(ref _isGameOver, value))
+                {
+                    _placePieceCommand.RaiseCanExecuteChanged();
+                    _selectPieceCommand.RaiseCanExecuteChanged();
+                }
             }
         }
-    }
 
-    public Brush? WinningBrush
-    {
-        get => _winningBrush;
-        private set => SetProperty(ref _winningBrush, value);
-    }
-
-    public int RemainingPiecesCount => _pieces.Count(piece => piece.IsAvailable);
-
-    private bool CanPlacePiece(BoardCellViewModel cell) => !IsGameOver && _phase == GamePhase.HumanPlacing && cell.Piece is null && _currentPiece is not null;
-
-    private bool CanSelectPiece(PieceViewModel piece) => !IsGameOver && _phase == GamePhase.HumanSelecting && piece.IsAvailable;
-
-    private void StartNewGame()
-    {
-        _board = new BoardState();
-        foreach (var cell in _boardCells)
+        public Brush WinningBrush
         {
-            cell.Piece = null;
-            cell.IsWinning = false;
+            get => _winningBrush;
+            private set => SetProperty(ref _winningBrush, value);
         }
 
-        foreach (var piece in _pieces)
+        public int RemainingPiecesCount => _pieces.Count(piece => piece.IsAvailable);
+
+        private bool CanPlacePiece(BoardCellViewModel cell)
         {
-            piece.IsAvailable = true;
-            piece.IsSelected = false;
-            piece.IsDimmed = false;
-            piece.IsOnBoard = false;
-            piece.IsWinning = false;
+            return !IsGameOver && _phase == GamePhase.HumanPlacing && cell.Piece == null && _currentPiece != null;
         }
 
-        _currentPiece = null;
-        _phase = GamePhase.None;
-        StatusMessage = $"Difficulté : {_selectedDifficulty}";
-        InstructionMessage = "L'ordinateur choisit une pièce pour vous.";
-        WinnerMessage = string.Empty;
-        WinningBrush = null;
-        IsGameOver = false;
-        RaisePropertyChanged(nameof(IsBoardInteractionEnabled));
-        RaisePropertyChanged(nameof(IsPieceSelectionEnabled));
-        RaisePropertyChanged(nameof(RemainingPiecesCount));
-        _availablePieces.Refresh();
-        GivePieceToHuman();
-    }
-
-    private void OnPiecePropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(PieceViewModel.IsOnBoard))
+        private bool CanSelectPiece(PieceViewModel piece)
         {
-            _availablePieces.Refresh();
-        }
-    }
-
-    private void GivePieceToHuman()
-    {
-        var available = _pieces.Where(p => p.IsAvailable).Select(p => p.Piece).ToList();
-        if (available.Count == 0)
-        {
-            HandleDraw();
-            return;
+            return !IsGameOver && _phase == GamePhase.HumanSelecting && piece.IsAvailable;
         }
 
-        var pieceModel = _computerPlayer.ChoosePieceForHuman(_board, available, _selectedDifficulty);
-        var pieceViewModel = _pieces.First(p => ReferenceEquals(p.Piece, pieceModel));
-        PrepareCurrentPiece(pieceViewModel, forHuman: true);
-        StatusMessage = $"Pièces restantes : {RemainingPiecesCount}";
-        InstructionMessage = "Placez la pièce transparente sur le plateau.";
-        _phase = GamePhase.HumanPlacing;
-        _placePieceCommand.RaiseCanExecuteChanged();
-        _selectPieceCommand.RaiseCanExecuteChanged();
-        RaisePropertyChanged(nameof(IsBoardInteractionEnabled));
-        RaisePropertyChanged(nameof(IsPieceSelectionEnabled));
-        RaisePropertyChanged(nameof(RemainingPiecesCount));
-    }
-
-    private void PrepareCurrentPiece(PieceViewModel piece, bool forHuman)
-    {
-        _currentPiece = piece;
-        piece.IsAvailable = false;
-        piece.IsSelected = true;
-        piece.IsDimmed = forHuman;
-        piece.IsOnBoard = false;
-    }
-
-    private void PlacePiece(BoardCellViewModel cell)
-    {
-        if (_currentPiece is null)
+        private void StartNewGame()
         {
-            return;
-        }
-
-        if (!_board.TryPlacePiece(cell.Row, cell.Column, _currentPiece.Piece))
-        {
-            return;
-        }
-
-        cell.Piece = _currentPiece;
-        cell.IsWinning = false;
-        _currentPiece.IsOnBoard = true;
-        _currentPiece.IsSelected = false;
-        _currentPiece.IsDimmed = false;
-        _currentPiece.IsWinning = false;
-        _currentPiece = null;
-
-        if (CheckForWinner(PlayerKind.Human))
-        {
-            return;
-        }
-
-        if (_board.IsBoardFull())
-        {
-            HandleDraw();
-            return;
-        }
-
-        _phase = GamePhase.HumanSelecting;
-        InstructionMessage = "Choisissez une pièce à donner à l'ordinateur.";
-        StatusMessage = $"Pièces restantes : {RemainingPiecesCount}";
-        _placePieceCommand.RaiseCanExecuteChanged();
-        _selectPieceCommand.RaiseCanExecuteChanged();
-        RaisePropertyChanged(nameof(IsBoardInteractionEnabled));
-        RaisePropertyChanged(nameof(IsPieceSelectionEnabled));
-        RaisePropertyChanged(nameof(RemainingPiecesCount));
-    }
-
-    private void SelectPieceForComputer(PieceViewModel piece)
-    {
-        piece.IsAvailable = false;
-        piece.IsSelected = true;
-        piece.IsDimmed = false;
-        RaisePropertyChanged(nameof(RemainingPiecesCount));
-        _phase = GamePhase.ComputerPlacing;
-        RaisePropertyChanged(nameof(IsBoardInteractionEnabled));
-        RaisePropertyChanged(nameof(IsPieceSelectionEnabled));
-        StatusMessage = "L'ordinateur joue...";
-        _placePieceCommand.RaiseCanExecuteChanged();
-        _selectPieceCommand.RaiseCanExecuteChanged();
-
-        ComputerPlacePiece(piece);
-
-        if (IsGameOver)
-        {
-            return;
-        }
-
-        if (_board.IsBoardFull())
-        {
-            HandleDraw();
-            return;
-        }
-
-        GivePieceToHuman();
-    }
-
-    private void ComputerPlacePiece(PieceViewModel piece)
-    {
-        var remainingPieces = _pieces.Where(p => p.IsAvailable).Select(p => p.Piece).ToList();
-        var move = _computerPlayer.ChoosePlacement(_board, piece.Piece, remainingPieces, _selectedDifficulty);
-        if (!_board.TryPlacePiece(move.Row, move.Column, piece.Piece))
-        {
-            var placed = false;
-            foreach (var (row, column) in _board.GetEmptyCells())
+            _board = new BoardState();
+            foreach (var cell in _boardCells)
             {
-                if (_board.TryPlacePiece(row, column, piece.Piece))
+                cell.Piece = null;
+                cell.IsWinning = false;
+            }
+
+            foreach (var piece in _pieces)
+            {
+                piece.IsAvailable = true;
+                piece.IsSelected = false;
+                piece.IsDimmed = false;
+                piece.IsOnBoard = false;
+                piece.IsWinning = false;
+            }
+
+            _currentPiece = null;
+            _phase = GamePhase.None;
+            StatusMessage = $"Difficulté : {_selectedDifficulty}";
+            InstructionMessage = "L'ordinateur choisit une pièce pour vous.";
+            WinnerMessage = string.Empty;
+            WinningBrush = null;
+            IsGameOver = false;
+            RaisePropertyChanged(nameof(IsBoardInteractionEnabled));
+            RaisePropertyChanged(nameof(IsPieceSelectionEnabled));
+            RaisePropertyChanged(nameof(RemainingPiecesCount));
+            _availablePieces.Refresh();
+            GivePieceToHuman();
+        }
+
+        private void OnPiecePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(PieceViewModel.IsOnBoard))
+            {
+                _availablePieces.Refresh();
+            }
+        }
+
+        private void GivePieceToHuman()
+        {
+            var available = _pieces.Where(p => p.IsAvailable).Select(p => p.Piece).ToList();
+            if (available.Count == 0)
+            {
+                HandleDraw();
+                return;
+            }
+
+            var pieceModel = _computerPlayer.ChoosePieceForHuman(_board, available, _selectedDifficulty);
+            var pieceViewModel = _pieces.First(p => ReferenceEquals(p.Piece, pieceModel));
+            PrepareCurrentPiece(pieceViewModel, true);
+            StatusMessage = $"Pièces restantes : {RemainingPiecesCount}";
+            InstructionMessage = "Placez la pièce transparente sur le plateau.";
+            _phase = GamePhase.HumanPlacing;
+            _placePieceCommand.RaiseCanExecuteChanged();
+            _selectPieceCommand.RaiseCanExecuteChanged();
+            RaisePropertyChanged(nameof(IsBoardInteractionEnabled));
+            RaisePropertyChanged(nameof(IsPieceSelectionEnabled));
+            RaisePropertyChanged(nameof(RemainingPiecesCount));
+        }
+
+        private void PrepareCurrentPiece(PieceViewModel piece, bool forHuman)
+        {
+            _currentPiece = piece;
+            piece.IsAvailable = false;
+            piece.IsSelected = true;
+            piece.IsDimmed = forHuman;
+            piece.IsOnBoard = false;
+        }
+
+        private void PlacePiece(BoardCellViewModel cell)
+        {
+            if (_currentPiece == null)
+            {
+                return;
+            }
+
+            if (!_board.TryPlacePiece(cell.Row, cell.Column, _currentPiece.Piece))
+            {
+                return;
+            }
+
+            cell.Piece = _currentPiece;
+            cell.IsWinning = false;
+            _currentPiece.IsOnBoard = true;
+            _currentPiece.IsSelected = false;
+            _currentPiece.IsDimmed = false;
+            _currentPiece.IsWinning = false;
+            _currentPiece = null;
+
+            if (CheckForWinner(PlayerKind.Human))
+            {
+                return;
+            }
+
+            if (_board.IsBoardFull())
+            {
+                HandleDraw();
+                return;
+            }
+
+            _phase = GamePhase.HumanSelecting;
+            InstructionMessage = "Choisissez une pièce à donner à l'ordinateur.";
+            StatusMessage = $"Pièces restantes : {RemainingPiecesCount}";
+            _placePieceCommand.RaiseCanExecuteChanged();
+            _selectPieceCommand.RaiseCanExecuteChanged();
+            RaisePropertyChanged(nameof(IsBoardInteractionEnabled));
+            RaisePropertyChanged(nameof(IsPieceSelectionEnabled));
+            RaisePropertyChanged(nameof(RemainingPiecesCount));
+        }
+
+        private void SelectPieceForComputer(PieceViewModel piece)
+        {
+            piece.IsAvailable = false;
+            piece.IsSelected = true;
+            piece.IsDimmed = false;
+            RaisePropertyChanged(nameof(RemainingPiecesCount));
+            _phase = GamePhase.ComputerPlacing;
+            RaisePropertyChanged(nameof(IsBoardInteractionEnabled));
+            RaisePropertyChanged(nameof(IsPieceSelectionEnabled));
+            StatusMessage = "L'ordinateur joue...";
+            _placePieceCommand.RaiseCanExecuteChanged();
+            _selectPieceCommand.RaiseCanExecuteChanged();
+
+            ComputerPlacePiece(piece);
+
+            if (IsGameOver)
+            {
+                return;
+            }
+
+            if (_board.IsBoardFull())
+            {
+                HandleDraw();
+                return;
+            }
+
+            GivePieceToHuman();
+        }
+
+        private void ComputerPlacePiece(PieceViewModel piece)
+        {
+            var remainingPieces = _pieces.Where(p => p.IsAvailable).Select(p => p.Piece).ToList();
+            var move = _computerPlayer.ChoosePlacement(_board, piece.Piece, remainingPieces, _selectedDifficulty);
+            if (!_board.TryPlacePiece(move.Row, move.Column, piece.Piece))
+            {
+                var placed = false;
+                foreach (var cell in _board.GetEmptyCells())
                 {
-                    move = new BoardPosition(row, column);
-                    placed = true;
-                    break;
+                    if (_board.TryPlacePiece(cell.Row, cell.Column, piece.Piece))
+                    {
+                        move = new BoardPosition(cell.Row, cell.Column);
+                        placed = true;
+                        break;
+                    }
+                }
+
+                if (!placed)
+                {
+                    return;
                 }
             }
 
-            if (!placed)
+            var boardCell = _boardCells.First(c => c.Row == move.Row && c.Column == move.Column);
+            boardCell.Piece = piece;
+            boardCell.IsWinning = false;
+            piece.IsOnBoard = true;
+            piece.IsSelected = false;
+            piece.IsDimmed = false;
+
+            CheckForWinner(PlayerKind.Computer);
+        }
+
+        private bool CheckForWinner(PlayerKind player)
+        {
+            if (_board.CheckWin(out var winningCells, out var winningAttribute))
             {
-                return;
+                HighlightWin(winningCells, winningAttribute);
+                WinnerMessage = player == PlayerKind.Human ? "Victoire de l'humain !" : "Victoire de l'ordinateur !";
+                InstructionMessage = "Cliquez sur \"Nouvelle partie\" pour recommencer.";
+                StatusMessage = string.Empty;
+                _phase = GamePhase.GameOver;
+                IsGameOver = true;
+                RaisePropertyChanged(nameof(IsBoardInteractionEnabled));
+                RaisePropertyChanged(nameof(IsPieceSelectionEnabled));
+                _placePieceCommand.RaiseCanExecuteChanged();
+                _selectPieceCommand.RaiseCanExecuteChanged();
+                return true;
             }
+
+            return false;
         }
 
-        var cell = _boardCells.First(c => c.Row == move.Row && c.Column == move.Column);
-        cell.Piece = piece;
-        cell.IsWinning = false;
-        piece.IsOnBoard = true;
-        piece.IsSelected = false;
-        piece.IsDimmed = false;
-
-        CheckForWinner(PlayerKind.Computer);
-    }
-
-    private bool CheckForWinner(PlayerKind player)
-    {
-        if (_board.CheckWin(out var winningCells, out var winningAttribute))
+        private void HighlightWin(IEnumerable<BoardPosition> winningCells, PieceAttribute? attribute)
         {
-            HighlightWin(winningCells, winningAttribute);
-            WinnerMessage = player == PlayerKind.Human ? "Victoire de l'humain !" : "Victoire de l'ordinateur !";
-            InstructionMessage = "Cliquez sur \"Nouvelle partie\" pour recommencer.";
-            StatusMessage = string.Empty;
-            _phase = GamePhase.GameOver;
-            IsGameOver = true;
-            RaisePropertyChanged(nameof(IsBoardInteractionEnabled));
-            RaisePropertyChanged(nameof(IsPieceSelectionEnabled));
-            _placePieceCommand.RaiseCanExecuteChanged();
-            _selectPieceCommand.RaiseCanExecuteChanged();
-            return true;
-        }
-
-        return false;
-    }
-
-    private void HighlightWin(IEnumerable<(int row, int column)> winningCells, PieceAttribute? attribute)
-    {
-        foreach (var cell in _boardCells)
-        {
-            cell.IsWinning = false;
-        }
-
-        foreach (var piece in _pieces)
-        {
-            piece.IsWinning = false;
-        }
-
-        foreach (var (row, column) in winningCells)
-        {
-            var cell = _boardCells.First(c => c.Row == row && c.Column == column);
-            cell.IsWinning = true;
-            if (cell.Piece is not null)
+            foreach (var cell in _boardCells)
             {
-                cell.Piece.IsWinning = true;
+                cell.IsWinning = false;
             }
-        }
 
-        if (attribute.HasValue)
-        {
-            var winningPiece = _boardCells.FirstOrDefault(c => c.IsWinning)?.Piece;
-            if (winningPiece is not null)
+            foreach (var piece in _pieces)
             {
-                var color = winningPiece.Piece.GetAttributeColor(attribute.Value);
-                var brush = new SolidColorBrush(color);
-                brush.Freeze();
-                WinningBrush = brush;
-                return;
+                piece.IsWinning = false;
             }
-        }
 
-        var fallback = new SolidColorBrush(PiecePalette.Magenta);
-        fallback.Freeze();
-        WinningBrush = fallback;
-    }
+            foreach (var position in winningCells)
+            {
+                var cell = _boardCells.First(c => c.Row == position.Row && c.Column == position.Column);
+                cell.IsWinning = true;
+                if (cell.Piece != null)
+                {
+                    cell.Piece.IsWinning = true;
+                }
+            }
+
+            if (attribute.HasValue)
+            {
+                var winningCell = _boardCells.FirstOrDefault(c => c.IsWinning);
+                if (winningCell != null && winningCell.Piece != null)
+                {
+                    var color = winningCell.Piece.Piece.GetAttributeColor(attribute.Value);
+                    var brush = new SolidColorBrush(color);
+                    brush.Freeze();
+                    WinningBrush = brush;
+                    return;
+                }
+            }
+
+            var fallback = new SolidColorBrush(PiecePalette.Magenta);
+            fallback.Freeze();
+            WinningBrush = fallback;
+        }
 
         private void HandleDraw()
         {

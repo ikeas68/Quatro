@@ -8,7 +8,7 @@ namespace Quatro.Services
 
     public sealed class ComputerPlayer
     {
-        private readonly Random _random = new();
+        private readonly Random _random = new Random();
 
         public BoardPosition ChoosePlacement(BoardState board, Piece piece, IReadOnlyCollection<Piece> remainingPieces, int difficulty)
         {
@@ -27,7 +27,7 @@ namespace Quatro.Services
                 }
             }
 
-            var moves = board.GetEmptyCells().Select(cell => new BoardPosition(cell.row, cell.column)).ToList();
+            var moves = board.GetEmptyCells().Select(cell => new BoardPosition(cell.Row, cell.Column)).ToList();
             return moves.Count == 0 ? default : ChoosePreferredMove(moves, difficulty);
         }
 
@@ -101,28 +101,28 @@ namespace Quatro.Services
 
         private IEnumerable<BoardPosition> GetSafeMoves(BoardState board, Piece piece, IReadOnlyCollection<Piece> remainingPieces)
         {
-            foreach (var (row, column) in board.GetEmptyCells())
+            foreach (var cell in board.GetEmptyCells())
             {
-                board.TryPlacePiece(row, column, piece);
+                board.TryPlacePiece(cell.Row, cell.Column, piece);
                 var createsForcedWin = remainingPieces.All(other => CreatesImmediateWinForOpponent(board, other));
-                board.RemovePiece(row, column);
+                board.RemovePiece(cell.Row, cell.Column);
                 if (!createsForcedWin)
                 {
-                    yield return new BoardPosition(row, column);
+                    yield return new BoardPosition(cell.Row, cell.Column);
                 }
             }
         }
 
         private static BoardPosition? FindWinningMove(BoardState board, Piece piece)
         {
-            foreach (var (row, column) in board.GetEmptyCells())
+            foreach (var cell in board.GetEmptyCells())
             {
-                board.TryPlacePiece(row, column, piece);
+                board.TryPlacePiece(cell.Row, cell.Column, piece);
                 var isWin = board.CheckWin(out _, out _);
-                board.RemovePiece(row, column);
+                board.RemovePiece(cell.Row, cell.Column);
                 if (isWin)
                 {
-                    return new BoardPosition(row, column);
+                    return new BoardPosition(cell.Row, cell.Column);
                 }
             }
 
@@ -131,11 +131,11 @@ namespace Quatro.Services
 
         private bool CreatesImmediateWinForOpponent(BoardState board, Piece piece)
         {
-            foreach (var (row, column) in board.GetEmptyCells())
+            foreach (var cell in board.GetEmptyCells())
             {
-                board.TryPlacePiece(row, column, piece);
+                board.TryPlacePiece(cell.Row, cell.Column, piece);
                 var isWin = board.CheckWin(out _, out _);
-                board.RemovePiece(row, column);
+                board.RemovePiece(cell.Row, cell.Column);
                 if (isWin)
                 {
                     return true;
@@ -158,15 +158,15 @@ namespace Quatro.Services
         private int CountPotentialWins(BoardState board, Piece piece)
         {
             var count = 0;
-            foreach (var (row, column) in board.GetEmptyCells())
+            foreach (var cell in board.GetEmptyCells())
             {
-                board.TryPlacePiece(row, column, piece);
+                board.TryPlacePiece(cell.Row, cell.Column, piece);
                 if (board.CheckWin(out _, out _))
                 {
                     count++;
                 }
 
-                board.RemovePiece(row, column);
+                board.RemovePiece(cell.Row, cell.Column);
             }
 
             return count;
