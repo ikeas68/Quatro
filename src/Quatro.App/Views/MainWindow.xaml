@@ -90,7 +90,7 @@
                     </Style>
                 </ItemsControl.ItemContainerStyle>
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type vm:BoardCellViewModel}">
+                    <DataTemplate>
                         <controls:BoardCellControl Piece="{Binding Piece}"
                                                    IsWinning="{Binding IsWinning}"
                                                    WinningBrush="{Binding DataContext.WinningBrush, RelativeSource={RelativeSource AncestorType=Window}}"
@@ -125,7 +125,7 @@
                                   ItemsPanel="{StaticResource PiecePanel}"
                                   Margin="12">
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type vm:PieceViewModel}">
+                            <DataTemplate>
                                 <Button Command="{Binding DataContext.SelectPieceCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                         CommandParameter="{Binding}"
                                         Background="Transparent"
