@@ -8,116 +8,116 @@ using System.Windows.Media;
 using Quatro.Models;
 using Quatro.Services;
 
-namespace Quatro.ViewModels;
-
-public sealed class GameViewModel : ViewModelBase
+namespace Quatro.ViewModels
 {
-    private readonly ComputerPlayer _computerPlayer = new();
-    private readonly ObservableCollection<PieceViewModel> _pieces;
-    private readonly ObservableCollection<BoardCellViewModel> _boardCells;
-    private readonly ReadOnlyObservableCollection<PieceViewModel> _readOnlyPieces;
-    private readonly ReadOnlyObservableCollection<BoardCellViewModel> _readOnlyBoardCells;
-    private readonly ICollectionView _availablePieces;
-    private readonly RelayCommand _placePieceCommand;
-    private readonly RelayCommand _selectPieceCommand;
-    private readonly RelayCommand _newGameCommand;
-
-    private BoardState _board = new();
-    private PieceViewModel? _currentPiece;
-    private GamePhase _phase;
-    private string _statusMessage = string.Empty;
-    private string _instructionMessage = string.Empty;
-    private string _winnerMessage = string.Empty;
-    private bool _isGameOver;
-    private Brush? _winningBrush;
-    private int _selectedDifficulty = 1;
-
-    public GameViewModel()
+    public sealed class GameViewModel : ViewModelBase
     {
-        _pieces = new ObservableCollection<PieceViewModel>(PieceSet.All.Select(piece => new PieceViewModel(piece)));
-        _boardCells = new ObservableCollection<BoardCellViewModel>();
-        for (var row = 0; row < 4; row++)
+        private readonly ComputerPlayer _computerPlayer = new();
+        private readonly ObservableCollection<PieceViewModel> _pieces;
+        private readonly ObservableCollection<BoardCellViewModel> _boardCells;
+        private readonly ReadOnlyObservableCollection<PieceViewModel> _readOnlyPieces;
+        private readonly ReadOnlyObservableCollection<BoardCellViewModel> _readOnlyBoardCells;
+        private readonly ICollectionView _availablePieces;
+        private readonly RelayCommand _placePieceCommand;
+        private readonly RelayCommand _selectPieceCommand;
+        private readonly RelayCommand _newGameCommand;
+
+        private BoardState _board = new();
+        private PieceViewModel? _currentPiece;
+        private GamePhase _phase;
+        private string _statusMessage = string.Empty;
+        private string _instructionMessage = string.Empty;
+        private string _winnerMessage = string.Empty;
+        private bool _isGameOver;
+        private Brush? _winningBrush;
+        private int _selectedDifficulty = 1;
+
+        public GameViewModel()
         {
-            for (var column = 0; column < 4; column++)
+            _pieces = new ObservableCollection<PieceViewModel>(PieceSet.All.Select(piece => new PieceViewModel(piece)));
+            _boardCells = new ObservableCollection<BoardCellViewModel>();
+            for (var row = 0; row < 4; row++)
             {
-                _boardCells.Add(new BoardCellViewModel(row, column));
+                for (var column = 0; column < 4; column++)
+                {
+                    _boardCells.Add(new BoardCellViewModel(row, column));
+                }
+            }
+
+            _readOnlyPieces = new ReadOnlyObservableCollection<PieceViewModel>(_pieces);
+            _readOnlyBoardCells = new ReadOnlyObservableCollection<BoardCellViewModel>(_boardCells);
+            _availablePieces = CollectionViewSource.GetDefaultView(_pieces);
+            _availablePieces.Filter = item => item is PieceViewModel vm && !vm.IsOnBoard;
+
+            foreach (var piece in _pieces)
+            {
+                piece.PropertyChanged += OnPiecePropertyChanged;
+            }
+
+            _placePieceCommand = new RelayCommand(param =>
+            {
+                if (param is BoardCellViewModel cell)
+                {
+                    PlacePiece(cell);
+                }
+            },
+            param => param is BoardCellViewModel cell && CanPlacePiece(cell));
+
+            _selectPieceCommand = new RelayCommand(param =>
+            {
+                if (param is PieceViewModel piece)
+                {
+                    SelectPieceForComputer(piece);
+                }
+            },
+            param => param is PieceViewModel piece && CanSelectPiece(piece));
+
+            _newGameCommand = new RelayCommand(_ => StartNewGame());
+
+            DifficultyLevels = new ReadOnlyCollection<int>(new[] { 1, 2, 3, 4 });
+
+            StartNewGame();
+        }
+
+        public ReadOnlyObservableCollection<PieceViewModel> Pieces => _readOnlyPieces;
+
+        public ReadOnlyObservableCollection<BoardCellViewModel> BoardCells => _readOnlyBoardCells;
+
+        public ICollectionView AvailablePieces => _availablePieces;
+
+        public ReadOnlyCollection<int> DifficultyLevels { get; }
+
+        public RelayCommand PlacePieceCommand => _placePieceCommand;
+
+        public RelayCommand SelectPieceCommand => _selectPieceCommand;
+
+        public RelayCommand NewGameCommand => _newGameCommand;
+
+        public int SelectedDifficulty
+        {
+            get => _selectedDifficulty;
+            set
+            {
+                if (SetProperty(ref _selectedDifficulty, value))
+                {
+                    StartNewGame();
+                }
             }
         }
 
-        _readOnlyPieces = new ReadOnlyObservableCollection<PieceViewModel>(_pieces);
-        _readOnlyBoardCells = new ReadOnlyObservableCollection<BoardCellViewModel>(_boardCells);
-        _availablePieces = CollectionViewSource.GetDefaultView(_pieces);
-        _availablePieces.Filter = item => item is PieceViewModel vm && !vm.IsOnBoard;
-
-        foreach (var piece in _pieces)
+        public string StatusMessage
         {
-            piece.PropertyChanged += OnPiecePropertyChanged;
+            get => _statusMessage;
+            private set => SetProperty(ref _statusMessage, value);
         }
 
-        _placePieceCommand = new RelayCommand(param =>
+        public string InstructionMessage
         {
-            if (param is BoardCellViewModel cell)
-            {
-                PlacePiece(cell);
-            }
-        },
-        param => param is BoardCellViewModel cell && CanPlacePiece(cell));
-
-        _selectPieceCommand = new RelayCommand(param =>
-        {
-            if (param is PieceViewModel piece)
-            {
-                SelectPieceForComputer(piece);
-            }
-        },
-        param => param is PieceViewModel piece && CanSelectPiece(piece));
-
-        _newGameCommand = new RelayCommand(_ => StartNewGame());
-
-        DifficultyLevels = new ReadOnlyCollection<int>(new[] { 1, 2, 3, 4 });
-
-        StartNewGame();
-    }
-
-    public ReadOnlyObservableCollection<PieceViewModel> Pieces => _readOnlyPieces;
-
-    public ReadOnlyObservableCollection<BoardCellViewModel> BoardCells => _readOnlyBoardCells;
-
-    public ICollectionView AvailablePieces => _availablePieces;
-
-    public ReadOnlyCollection<int> DifficultyLevels { get; }
-
-    public RelayCommand PlacePieceCommand => _placePieceCommand;
-
-    public RelayCommand SelectPieceCommand => _selectPieceCommand;
-
-    public RelayCommand NewGameCommand => _newGameCommand;
-
-    public int SelectedDifficulty
-    {
-        get => _selectedDifficulty;
-        set
-        {
-            if (SetProperty(ref _selectedDifficulty, value))
-            {
-                StartNewGame();
-            }
+            get => _instructionMessage;
+            private set => SetProperty(ref _instructionMessage, value);
         }
-    }
 
-    public string StatusMessage
-    {
-        get => _statusMessage;
-        private set => SetProperty(ref _statusMessage, value);
-    }
-
-    public string InstructionMessage
-    {
-        get => _instructionMessage;
-        private set => SetProperty(ref _instructionMessage, value);
-    }
-
-    public string WinnerMessage
+        public string WinnerMessage
     {
         get => _winnerMessage;
         private set => SetProperty(ref _winnerMessage, value);
@@ -386,31 +386,32 @@ public sealed class GameViewModel : ViewModelBase
         WinningBrush = fallback;
     }
 
-    private void HandleDraw()
-    {
-        WinnerMessage = "Match nul";
-        InstructionMessage = "Cliquez sur \"Nouvelle partie\" pour rejouer.";
-        StatusMessage = string.Empty;
-        _phase = GamePhase.GameOver;
-        IsGameOver = true;
-        RaisePropertyChanged(nameof(IsBoardInteractionEnabled));
-        RaisePropertyChanged(nameof(IsPieceSelectionEnabled));
-        _placePieceCommand.RaiseCanExecuteChanged();
-        _selectPieceCommand.RaiseCanExecuteChanged();
+        private void HandleDraw()
+        {
+            WinnerMessage = "Match nul";
+            InstructionMessage = "Cliquez sur \"Nouvelle partie\" pour rejouer.";
+            StatusMessage = string.Empty;
+            _phase = GamePhase.GameOver;
+            IsGameOver = true;
+            RaisePropertyChanged(nameof(IsBoardInteractionEnabled));
+            RaisePropertyChanged(nameof(IsPieceSelectionEnabled));
+            _placePieceCommand.RaiseCanExecuteChanged();
+            _selectPieceCommand.RaiseCanExecuteChanged();
+        }
     }
-}
 
-internal enum GamePhase
-{
-    None,
-    HumanPlacing,
-    HumanSelecting,
-    ComputerPlacing,
-    GameOver
-}
+    internal enum GamePhase
+    {
+        None,
+        HumanPlacing,
+        HumanSelecting,
+        ComputerPlacing,
+        GameOver
+    }
 
-internal enum PlayerKind
-{
-    Human,
-    Computer
+    internal enum PlayerKind
+    {
+        Human,
+        Computer
+    }
 }
