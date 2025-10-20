@@ -1,7 +1,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:Quatro.Controls"
-                    xmlns:vm="clr-namespace:Quatro.ViewModels">
+                    xmlns:controls="clr-namespace:Quatro.Controls;assembly=Quatro.App"
+                    xmlns:vm="clr-namespace:Quatro.ViewModels;assembly=Quatro.App">
     <SolidColorBrush x:Key="BoardBackgroundBrush" Color="#1F1F28" />
     <SolidColorBrush x:Key="CellBorderBrush" Color="#44465A" />
     <SolidColorBrush x:Key="CellBackgroundBrush" Color="#2F3042" />
