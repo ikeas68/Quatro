@@ -1,13 +1,15 @@
 using System.Windows;
 using Quatro.ViewModels;
 
-namespace Quatro.Views;
-
-public partial class MainWindow : Window
+namespace Quatro.Views
 {
-    public MainWindow()
+
+    public partial class MainWindow : Window
     {
-        InitializeComponent();
-        DataContext = new GameViewModel();
+        public MainWindow()
+        {
+            InitializeComponent();
+            DataContext = new GameViewModel();
+        }
     }
 }

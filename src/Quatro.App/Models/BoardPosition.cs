@@ -1,3 +1,5 @@
-namespace Quatro.Models;
+namespace Quatro.Models
+{
 
-public readonly record struct BoardPosition(int Row, int Column);
+    public readonly record struct BoardPosition(int Row, int Column);
+}
