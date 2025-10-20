@@ -4,6 +4,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quatro.App", "src\Quatro.App\Quatro.App.csproj", "{1B4F88E9-C947-43EC-B388-038F19BB207A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quatro48", "Quatro48\Quatro48.csproj", "{6C63D0C6-758B-4E6A-BADD-631C04B085CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -11,11 +13,17 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{1B4F88E9-C947-43EC-B388-038F19BB207A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1B4F88E9-C947-43EC-B388-038F19BB207A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B4F88E9-C947-43EC-B388-038F19BB207A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B4F88E9-C947-43EC-B388-038F19BB207A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C63D0C6-758B-4E6A-BADD-631C04B085CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C63D0C6-758B-4E6A-BADD-631C04B085CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C63D0C6-758B-4E6A-BADD-631C04B085CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C63D0C6-758B-4E6A-BADD-631C04B085CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D151D01A-0542-4EFE-AAA7-879C629C7BFE}
 	EndGlobalSection
 EndGlobal

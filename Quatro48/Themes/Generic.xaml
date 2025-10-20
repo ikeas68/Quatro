@@ -1,35 +1,41 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:Quatro.Controls"
-                    xmlns:vm="clr-namespace:Quatro.ViewModels">
-    <SolidColorBrush x:Key="BoardBackgroundBrush" Color="#1F1F28" />
-    <SolidColorBrush x:Key="CellBorderBrush" Color="#44465A" />
-    <SolidColorBrush x:Key="CellBackgroundBrush" Color="#2F3042" />
-    <SolidColorBrush x:Key="PieceBorderBrush" Color="#F5F5F5" />
-    <SolidColorBrush x:Key="WinningBorderBrush" Color="#FFEB3B" />
+                    xmlns:local="clr-namespace:Quatro48">
+    <SolidColorBrush x:Key="BoardBackgroundBrush"
+                     Color="#1F1F28" />
+    <SolidColorBrush x:Key="CellBorderBrush"
+                     Color="#44465A" />
+    <SolidColorBrush x:Key="CellBackgroundBrush"
+                     Color="#2F3042" />
+    <SolidColorBrush x:Key="PieceBorderBrush"
+                     Color="#F5F5F5" />
+    <SolidColorBrush x:Key="WinningBorderBrush"
+                     Color="#FFEB3B" />
     <!-- data templates -->
-    
     <!---->
-    <DataTemplate DataType="{x:Type vm:PieceViewModel}">
-        <controls:PieceControl Width="72"
-                                Height="72"
-                                Margin="4"
-                                TopLeftBrush="{Binding TopLeftBrush}"
-                                TopRightBrush="{Binding TopRightBrush}"
-                                BottomLeftBrush="{Binding BottomLeftBrush}"
-                                BottomRightBrush="{Binding BottomRightBrush}"
-                                IsDimmed="{Binding IsDimmed}"
-                                IsSelected="{Binding IsSelected}"
-                                IsWinning="{Binding IsWinning}"
-                                IsOnBoard="{Binding IsOnBoard}" />
+    <DataTemplate DataType="{x:Type local:PieceViewModel}">
+        <local:PieceControl Width="72"
+                            Height="72"
+                            Margin="4"
+                            TopLeftBrush="{Binding TopLeftBrush}"
+                            TopRightBrush="{Binding TopRightBrush}"
+                            BottomLeftBrush="{Binding BottomLeftBrush}"
+                            BottomRightBrush="{Binding BottomRightBrush}"
+                            IsDimmed="{Binding IsDimmed}"
+                            IsSelected="{Binding IsSelected}"
+                            IsWinning="{Binding IsWinning}"
+                            IsOnBoard="{Binding IsOnBoard}" />
     </DataTemplate>
     <!---->
-    <Style TargetType="{x:Type controls:PieceControl}">
-        <Setter Property="SnapsToDevicePixels" Value="True" />
+    <Style TargetType="{x:Type local:PieceControl}">
+        <Setter Property="SnapsToDevicePixels"
+                Value="True" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type controls:PieceControl}">
-                    <Grid x:Name="Root" Width="72" Height="72">
+                <ControlTemplate TargetType="{x:Type local:PieceControl}">
+                    <Grid x:Name="Root"
+                          Width="72"
+                          Height="72">
                         <Border x:Name="BaseBorder"
                                 Background="#1AFFFFFF"
                                 CornerRadius="12"
@@ -66,29 +72,48 @@
                                 Visibility="Collapsed" />
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsDimmed" Value="True">
-                            <Setter TargetName="BaseBorder" Property="Opacity" Value="0.45" />
+                        <Trigger Property="IsDimmed"
+                                 Value="True">
+                            <Setter TargetName="BaseBorder"
+                                    Property="Opacity"
+                                    Value="0.45" />
                         </Trigger>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Selection" Property="Visibility" Value="Visible" />
+                        <Trigger Property="IsSelected"
+                                 Value="True">
+                            <Setter TargetName="Selection"
+                                    Property="Visibility"
+                                    Value="Visible" />
                         </Trigger>
-                        <Trigger Property="IsWinning" Value="True">
-                            <Setter TargetName="Selection" Property="BorderBrush" Value="{StaticResource WinningBorderBrush}" />
-                            <Setter TargetName="Selection" Property="Visibility" Value="Visible" />
+                        <Trigger Property="IsWinning"
+                                 Value="True">
+                            <Setter TargetName="Selection"
+                                    Property="BorderBrush"
+                                    Value="{StaticResource WinningBorderBrush}" />
+                            <Setter TargetName="Selection"
+                                    Property="Visibility"
+                                    Value="Visible" />
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
-                                <Condition Property="IsDimmed" Value="False" />
-                                <Condition Property="IsOnBoard" Value="True" />
+                                <Condition Property="IsDimmed"
+                                           Value="False" />
+                                <Condition Property="IsOnBoard"
+                                           Value="True" />
                             </MultiTrigger.Conditions>
-                            <Setter TargetName="BaseBorder" Property="Opacity" Value="1" />
+                            <Setter TargetName="BaseBorder"
+                                    Property="Opacity"
+                                    Value="1" />
                         </MultiTrigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
-                                <Condition Property="IsDimmed" Value="False" />
-                                <Condition Property="IsOnBoard" Value="False" />
+                                <Condition Property="IsDimmed"
+                                           Value="False" />
+                                <Condition Property="IsOnBoard"
+                                           Value="False" />
                             </MultiTrigger.Conditions>
-                            <Setter TargetName="BaseBorder" Property="Opacity" Value="0.75" />
+                            <Setter TargetName="BaseBorder"
+                                    Property="Opacity"
+                                    Value="0.75" />
                         </MultiTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -96,11 +121,12 @@
         </Setter>
     </Style>
     <!---->
-    <Style TargetType="{x:Type controls:BoardCellControl}">
-        <Setter Property="Focusable" Value="False" />
+    <Style TargetType="{x:Type local:BoardCellControl}">
+        <Setter Property="Focusable"
+                Value="False" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type controls:BoardCellControl}">
+                <ControlTemplate TargetType="{x:Type local:BoardCellControl}">
                     <Grid>
                         <Border x:Name="CellBackground"
                                 Background="{StaticResource CellBackgroundBrush}"
@@ -117,13 +143,18 @@
                                 Opacity="0" />
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="CellBackground" Property="Opacity" Value="0.6" />
+                        <Trigger Property="IsEnabled"
+                                 Value="False">
+                            <Setter TargetName="CellBackground"
+                                    Property="Opacity"
+                                    Value="0.6" />
                         </Trigger>
-                        <Trigger Property="IsWinning" Value="True">
+                        <Trigger Property="IsWinning"
+                                 Value="True">
                             <Trigger.EnterActions>
                                 <BeginStoryboard x:Name="WinningBlink">
-                                    <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                                    <Storyboard RepeatBehavior="Forever"
+                                                AutoReverse="True">
                                         <DoubleAnimation Storyboard.TargetName="Highlight"
                                                          Storyboard.TargetProperty="Opacity"
                                                          From="0.15"
@@ -135,7 +166,9 @@
                             <Trigger.ExitActions>
                                 <StopStoryboard BeginStoryboardName="WinningBlink" />
                             </Trigger.ExitActions>
-                            <Setter TargetName="Highlight" Property="Opacity" Value="0.5" />
+                            <Setter TargetName="Highlight"
+                                    Property="Opacity"
+                                    Value="0.5" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
