@@ -2,7 +2,7 @@ namespace Quatro.ViewModels
 {
     public sealed class BoardCellViewModel : ViewModelBase
     {
-        private PieceViewModel? _piece;
+        private PieceViewModel _piece;
         private bool _isWinning;
 
         public BoardCellViewModel(int row, int column)
@@ -15,7 +15,7 @@ namespace Quatro.ViewModels
 
         public int Column { get; }
 
-        public PieceViewModel? Piece
+        public PieceViewModel Piece
         {
             get => _piece;
             set => SetProperty(ref _piece, value);

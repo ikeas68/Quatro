@@ -14,9 +14,9 @@ namespace Quatro.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(BoardCellControl), new FrameworkPropertyMetadata(typeof(BoardCellControl)));
         }
 
-        public PieceViewModel? Piece
+        public PieceViewModel Piece
         {
-            get => (PieceViewModel?)GetValue(PieceProperty);
+            get => GetValue(PieceProperty) as PieceViewModel;
             set => SetValue(PieceProperty, value);
         }
 
@@ -32,25 +32,25 @@ namespace Quatro.Controls
         public static readonly DependencyProperty IsWinningProperty =
             DependencyProperty.Register(nameof(IsWinning), typeof(bool), typeof(BoardCellControl), new PropertyMetadata(false));
 
-        public Brush? WinningBrush
+        public Brush WinningBrush
         {
-            get => (Brush?)GetValue(WinningBrushProperty);
+            get => GetValue(WinningBrushProperty) as Brush;
             set => SetValue(WinningBrushProperty, value);
         }
 
         public static readonly DependencyProperty WinningBrushProperty =
             DependencyProperty.Register(nameof(WinningBrush), typeof(Brush), typeof(BoardCellControl), new PropertyMetadata(null));
 
-        public ICommand? Command
+        public ICommand Command
         {
-            get => (ICommand?)GetValue(CommandProperty);
+            get => GetValue(CommandProperty) as ICommand;
             set => SetValue(CommandProperty, value);
         }
 
         public static readonly DependencyProperty CommandProperty =
             DependencyProperty.Register(nameof(Command), typeof(ICommand), typeof(BoardCellControl), new PropertyMetadata(null));
 
-        public object? CommandParameter
+        public object CommandParameter
         {
             get => GetValue(CommandParameterProperty);
             set => SetValue(CommandParameterProperty, value);
@@ -67,7 +67,8 @@ namespace Quatro.Controls
                 return;
             }
 
-            if (Command is { } command)
+            var command = Command;
+            if (command != null)
             {
                 var parameter = CommandParameter ?? DataContext;
                 if (command.CanExecute(parameter))
