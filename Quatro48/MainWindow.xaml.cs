@@ -23,6 +23,7 @@ namespace Quatro48
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new GameViewModel();
         }
     }
 }
