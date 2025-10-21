@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   sodipodi:docname="quarto.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     showguides="false"
+     showgrid="true"
+     inkscape:lockguides="true"
+     guidecolor="#e50000"
+     guideopacity="0.6"
+     guidehicolor="#0a00ff"
+     guidehiopacity="0.49803922"
+     inkscape:export-bgcolor="#ffffff00"
+     inkscape:zoom="1.788996"
+     inkscape:cx="202.90711"
+     inkscape:cy="434.32182"
+     inkscape:window-width="1918"
+     inkscape:window-height="912"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <sodipodi:guide
+       position="49.988466,225.12309"
+       orientation="0,-1"
+       id="guide1"
+       inkscape:locked="true" />
+    <inkscape:grid
+       id="grid1"
+       units="mm"
+       originx="0"
+       originy="0"
+       spacingx="0.99999998"
+       spacingy="1"
+       empcolor="#0099e5"
+       empopacity="0.30196078"
+       color="#0099e5"
+       opacity="0.14901961"
+       empspacing="5"
+       enabled="true"
+       visible="true" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="rect1"
+       style="fill:#ffffff;stroke-width:0.212188"
+       d="m 52.067106,84.604655 c -3.894099,0 -7.029028,3.13493 -7.029028,7.029028 v 31.372247 c 0,3.8941 3.134929,7.02903 7.029028,7.02903 h 31.079757 c 3.894098,0 7.029028,-3.13493 7.029028,-7.02903 V 91.633683 c 0,-3.894098 -3.13493,-7.029028 -7.029028,-7.029028 z"
+       sodipodi:nodetypes="sssssssss"
+       inkscape:export-filename="quarto.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       id="rect2"
+       style="fill:#000000;stroke-width:0.271981"
+       d="m 57.21738,92.223828 c -2.611801,0 -4.714958,2.10264 -4.714958,4.714441 v 20.889681 c 0,2.6118 2.103157,4.71444 4.714958,4.71444 h 15.983521 v 3.37241 c 0,0.36503 0.293838,0.65887 0.658874,0.65887 h 1.64021 c 0.365036,0 0.658875,-0.29384 0.658875,-0.65887 v -3.37241 h 1.652095 c 2.611801,0 4.714441,-2.10264 4.714441,-4.71444 V 96.938269 c 0,-2.611801 -2.10264,-4.714441 -4.714441,-4.714441 z m 0.925525,2.66237 h 18.733224 c 1.731825,0 3.125907,1.394082 3.125907,3.125908 v 18.742014 c 0,1.73182 -1.394082,3.12642 -3.125907,3.12642 H 76.15886 v -3.59513 c 0,-0.36503 -0.293839,-0.65887 -0.658875,-0.65887 h -1.64021 c -0.365036,0 -0.658874,0.29384 -0.658874,0.65887 v 3.59513 H 58.142905 c -1.731825,0 -3.125907,-1.3946 -3.125907,-3.12642 V 98.012106 c 0,-1.731826 1.394082,-3.125908 3.125907,-3.125908 z" />
+  </g>
+</svg>
