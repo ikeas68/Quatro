@@ -24,10 +24,13 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        <!-- selection niveau + partie -->
         <Border Grid.ColumnSpan="2"
-                Margin="0 0 0 16"
+                Margin="0 0 0 5"
                 Padding="20"
                 CornerRadius="12"
                 BorderBrush="#33FFFFFF"
@@ -40,17 +43,17 @@
                             VerticalAlignment="Center">
                     <TextBlock Text="Difficulté"
                                FontSize="18"
-                               Foreground="White"
+                               Foreground="Black"
                                VerticalAlignment="Center"
                                Margin="0,0,12,0" />
                     <ComboBox Width="160"
                               ItemsSource="{Binding DifficultyLevels}"
                               SelectedItem="{Binding SelectedDifficulty}"
-                              Foreground="White"
+                              Foreground="Black"
                               FontSize="16"
                               BorderThickness="0"
                               Padding="6,2"
-                              Background="#33222244" />
+                              Background="White" />
                 </StackPanel>
                 <Button Content="Nouvelle partie"
                         Command="{Binding NewGameCommand}"
@@ -68,16 +71,23 @@
                     <TextBlock Text="{Binding StatusMessage}"
                                FontSize="16"
                                Foreground="#E8E8F9" />
-                    <TextBlock Text="{Binding InstructionMessage}"
-                               FontSize="16"
-                               Foreground="#B8C2E5"
-                               TextWrapping="Wrap"
-                               Margin="0,6,0,0"
-                               MaxWidth="420" />
+                 
                 </StackPanel>
             </StackPanel>
         </Border>
-        <Border Grid.Row="1"
+        <!-- info utilisateur -->
+        <TextBlock Text="{Binding InstructionMessage}"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   Grid.Row="1"
+                   Margin="0 0 0 5"
+                   Grid.ColumnSpan="10"
+                   Foreground="black"
+                   TextWrapping="Wrap"
+                  
+                    />
+        <!-- plateau -->
+        <Border Grid.Row="2"
                 Margin="0 0 20 0"
                 CornerRadius="16"
                 Background="#22000000"
@@ -103,8 +113,9 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Border>
+        <!--selection piece-->
         <Border Grid.Column="1"
-                Grid.Row="1"
+                Grid.Row="2"
                 CornerRadius="16"
                 Background="#22000000"
                 BorderBrush="#44FFFFFF"
@@ -114,13 +125,9 @@
                             Margin="16,16,16,0">
                     <TextBlock Text="Pièces disponibles"
                                FontSize="18"
-                               Foreground="White"
+                               Foreground="Black"
                                FontWeight="SemiBold" />
-                    <TextBlock Text="{Binding WinnerMessage}"
-                               FontSize="16"
-                               Foreground="#FFD966"
-                               TextWrapping="Wrap"
-                               Margin="0,6,0,0" />
+                  
                 </StackPanel>
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding AvailablePieces}"
@@ -143,5 +150,14 @@
                 </ScrollViewer>
             </DockPanel>
         </Border>
+        <!-- winner message -->
+        <TextBlock Text="{Binding WinnerMessage}"
+                   FontSize="16"
+                   Grid.Row="3"
+                   Grid.ColumnSpan="10"
+                   FontWeight="Bold"
+                   Foreground="black"
+                   TextWrapping="Wrap"
+                   Margin="0,6,0,0" />
     </Grid>
 </Window>

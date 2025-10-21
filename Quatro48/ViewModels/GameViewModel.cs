@@ -209,7 +209,7 @@ namespace Quatro48
             var pieceViewModel = _pieces.First(p => ReferenceEquals(p.Piece, pieceModel));
             PrepareCurrentPiece(pieceViewModel, true);
             StatusMessage = $"Pièces restantes : {RemainingPiecesCount}";
-            InstructionMessage = "Placez la pièce transparente sur le plateau.";
+            InstructionMessage = "Placez la pièce selectionné sur le plateau.";
             _phase = GamePhase.HumanPlacing;
             _placePieceCommand.RaiseCanExecuteChanged();
             _selectPieceCommand.RaiseCanExecuteChanged();
