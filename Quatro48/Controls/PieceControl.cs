@@ -9,7 +9,7 @@ namespace Quatro48
         static PieceControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(PieceControl), new FrameworkPropertyMetadata(typeof(PieceControl)));
-        }
+        }       
 
         public Brush TopLeftBrush
         {
@@ -82,5 +82,8 @@ namespace Quatro48
 
         public static readonly DependencyProperty IsOnBoardProperty =
             DependencyProperty.Register(nameof(IsOnBoard), typeof(bool), typeof(PieceControl), new PropertyMetadata(false));
+
+
+       
     }
 }
