@@ -8,6 +8,7 @@
         Title="Quatro48"
         Height="644"
         Width="873"
+        WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
     <Window.Resources>
         <ItemsPanelTemplate x:Key="BoardPanel">
