@@ -126,13 +126,15 @@
                 BorderBrush="#33FFFFFF"
                 BorderThickness="1"
                 Background="#19000000">
-            <StackPanel Orientation="Horizontal"
+            <DockPanel 
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal"
-                            VerticalAlignment="Center">
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Left">
                     <TextBlock Text="Difficulté"
                                FontSize="18"
+                               FontWeight="Bold"
                                Foreground="Black"
                                VerticalAlignment="Center"
                                Margin="0,0,12,0" />
@@ -143,9 +145,16 @@
                               FontSize="16"
                               BorderThickness="0"
                               Padding="6,2"
-                              Background="White" />
+                              Background="White">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ., Converter={local:LevelConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </StackPanel>
                 <Button Content="Nouvelle partie"
+                        DockPanel.Dock="Right"
                         Command="{Binding NewGameCommand}"
                         Padding="16,6"
                         Margin="24,0,0,0"
@@ -162,7 +171,7 @@
                                FontSize="16"
                                Foreground="#E8E8F9" />
                 </StackPanel>
-            </StackPanel>
+            </DockPanel>
         </Border>
         <!-- info utilisateur -->
         <TextBlock Text="{Binding InstructionMessage}"
@@ -220,8 +229,9 @@
                                 Margin="16,16,16,0">
                         <TextBlock Text="Pièces disponibles"
                                    FontSize="18"
+                                   FontWeight="Bold"
                                    Foreground="Black"
-                                   FontWeight="SemiBold" />
+                                    />
                     </StackPanel>
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <ItemsControl ItemsSource="{Binding AvailablePieces}"

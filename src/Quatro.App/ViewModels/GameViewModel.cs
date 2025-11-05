@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
+using System.Windows.Markup;
 using System.Windows.Media;
 using Quatro.Models;
 using Quatro.Services;
@@ -74,7 +76,9 @@ namespace Quatro.ViewModels
 
             _newGameCommand = new RelayCommand(_ => StartNewGame());
 
-            DifficultyLevels = new ReadOnlyCollection<int>(new[] { 1, 2, 3, 4 });
+            DifficultyLevels = new ReadOnlyCollection<int>(
+                new[] { 1, 2, 3, 4 }
+                );
 
             StartNewGame();
         }
@@ -419,5 +423,28 @@ namespace Quatro.ViewModels
     {
         Human,
         Computer
+    }
+
+    public class LevelConverter : MarkupExtension, IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int level = (int)value;
+            switch (level)
+            {
+                case 1: return "1 - Débutant";
+                case 2: return "2 - Apprenti";
+                case 3: return "3 - Avancé";
+                case 4: return "4 - Expert";
+                default: return "?????";
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+            throw new NotImplementedException();
+
+
+        public override object ProvideValue(IServiceProvider serviceProvider) => this;
+
     }
 }

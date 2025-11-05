@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
+using System.Windows.Markup;
 using System.Windows.Media;
 
 namespace Quatro48
@@ -417,5 +419,28 @@ namespace Quatro48
     {
         Human,
         Computer
+    }
+
+    public class LevelConverter : MarkupExtension, IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int level = (int)value;
+            switch (level)
+            {
+                case 1: return "1 - Débutant";
+                case 2: return "2 - Apprenti";
+                case 3: return "3 - Avancé";
+                case 4: return "4 - Expert";
+                default: return "?????";
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+            throw new NotImplementedException();
+
+
+        public override object ProvideValue(IServiceProvider serviceProvider) => this;
+
     }
 }
